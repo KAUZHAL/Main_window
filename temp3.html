@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TEAM SAMMARD</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="A WEBPAGE FOR TO-DO LIST"> 
+        <meta name="keywords" content="Team Sammard, To-do list, web">
+        <meta name="author" content="KAUSHAL">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="refresh" content="90">
+        <style>
+            body {
+                background-image: url("Aurora.jpg");
+                background-repeat: repeat;
+                background-attachment: fixed;
+                background-position: center;
+                background-size: cover;
+                border: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            .container {
+                position: relative;
+                width: 1000px;
+                height:650px;
+                background-color:transparent;
+                border-radius: 5px;
+                padding: 20px;
+                display:flex;
+                flex-direction: column;
+                align-items:center;
+                gap:10px;
+            }
+            .transparent-button1,
+            .transparent-button2,
+            .transparent-button3 {
+                background-color: transparent;
+                border: ridge;
+                border-color: white;
+                border-radius: 15px;
+                padding: 5px;
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+                font-style: italic;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                font-weight: bold;
+                font-size: 24px;
+                color: white;
+            }
+            .task-list {
+                list-style: upper-alpha;
+                padding: 10px;
+                background-color: transparent;
+                border:ridge;
+                border-radius:5px;
+                max-width:800px;
+                max-height:infinite;
+                font-weight: bolder;
+                font-style:italic;
+                color:white;
+                font-size:12px;;
+            }
+            .task-list li {
+                margin-bottom: 5px;
+            }
+            input[type="text"],
+            input[type="number"]
+            {
+                color:white;
+                background-color: transparent;
+                border:ridge;
+                border-color:white ;
+                border-radius: 5px;
+                outline:none;
+                font-weight: bold;
+                font-size: 24px;
+            }   
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 style="color:white"><i><b><ins style="color: white;">TEAM SAMMARD'S TO-DO LIST</ins></b></i></h1><br>
+            <!--FOR CREATING A HORIZONTAL DIVISION IN ROW-->
+            <table width="750">
+                <tr align="center">
+                    <th width="250"><button class="transparent-button1" onclick="createTaskButton(this)"><span>ADD TASKS</span></button></th>
+                    <th width="250"><button class="transparent-button2" onclick="deleteTaskButton()"><span>DELETE TASKS</span></button></th>
+                    <th width="250"><button class="transparent-button3" onclick="markTaskButton()"><span>MARK TASKS</span></button></th>
+                </tr>
+            </table>
+            <ol id="taskList" class="task-list"></ol>
+        </div>
+        <script>
+            function createTaskButton(button) {
+                button.disabled = true;
+                let taskInputLabel = document.createElement("label");
+                taskInputLabel.innerHTML = "TASK:";
+                taskInputLabel.style.color = "white";
+                taskInputLabel.style.fontWeight="bold"
+                taskInputLabel.style.fontSize="24px";
+                let taskInput = document.createElement("input");
+                taskInput.type = "text";
+                taskInput.id = "taskInput";
+
+                let indexInputLabel = document.createElement("label");
+                indexInputLabel.innerHTML = "PRIORITY:";
+                indexInputLabel.style.color = "white";
+                indexInputLabel.style.fontWeight="bold"
+                indexInputLabel.style.fontSize="24px";
+                let indexInput = document.createElement("input");
+                indexInput.type = "number";
+                indexInput.id = "indexInput";
+                indexInput.min = "1";
+
+                let submitButton = document.createElement("button");
+                submitButton.innerText = "Submit";
+                submitButton.onclick = addTask;
+                submitButton.style.backgroundColor="transparent";
+                submitButton.style.border="ridge";
+                submitButton.style.color = "white";
+                submitButton.style.fontWeight="bolder"
+                submitButton.style.fontSize="24px";
+                submitButton.style.borderRadius="5px";
+
+                let container = document.querySelector(".container");
+                container.appendChild(taskInputLabel);
+                container.appendChild(taskInput);
+                container.appendChild(indexInputLabel);
+                container.appendChild(indexInput);
+                container.appendChild(submitButton);
+            }
+
+            function addTask() {
+                let taskInput = document.getElementById("taskInput");
+                let task = taskInput.value.trim();
+
+                let indexInput = document.getElementById("indexInput");
+                let index = parseInt(indexInput.value) - 1;
+
+                if (!task || isNaN(index) || index < 0) {
+                    alert("Invalid task or index!");
+                    return;
+                }
+
+                let taskList = document.getElementById("taskList");
+                let taskItems = taskList.getElementsByTagName("li");
+
+                if (index >= taskItems.length) {
+                    index = taskItems.length;
+                }
+
+                let taskItem = document.createElement("li");
+                taskItem.innerText = task;
+
+                if (index === taskItems.length) {
+                    taskList.appendChild(taskItem);
+                } else {
+                    var nextTaskItem = taskItems[index];
+                    taskList.insertBefore(taskItem, nextTaskItem);
+                }
+
+                taskInput.value = "";
+                indexInput.value = "";
+            }
+
+            function deleteTaskButton() {
+                let taskList = document.getElementById("taskList");
+                let taskItems = taskList.getElementsByTagName("li");
+
+                if (taskItems.length === 0) {
+                    alert("No tasks to delete!");
+                    return;
+                }
+
+                let taskToDelete = prompt("Enter the task number to delete (1-" + taskItems.length + "):");
+                let indexToDelete = parseInt(taskToDelete) - 1;
+
+                if (isNaN(indexToDelete) || indexToDelete < 0 || indexToDelete >= taskItems.length) {
+                    alert("Invalid task number!");
+                    return;
+                }
+
+                taskList.removeChild(taskItems[indexToDelete]);
+            }
+
+            function markTaskButton() {
+                let taskList = document.getElementById("taskList");
+                let taskItems = taskList.getElementsByTagName("li");
+
+                if (taskItems.length === 0) {
+                    alert("No tasks to mark!");
+                    return;
+                }
+
+                let taskToMark = prompt("Enter the task number to mark (1-" + taskItems.length + "):");
+                let indexToMark = parseInt(taskToMark) - 1;
+
+                if (isNaN(indexToMark) || indexToMark < 0 || indexToMark >= taskItems.length) {
+                    alert("Invalid task number!");
+                    return;
+                }
+
+                let taskItem = taskItems[indexToMark];
+                taskItem.style.textDecoration = "line-through";
+            }
+        </script>
+    </body>
+</html>
